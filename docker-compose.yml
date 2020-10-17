@@ -1,0 +1,49 @@
+
+version: '3.6'
+
+services:
+  survey:
+    image: postgres:11.5
+    environment:
+      "POSTGRES_USER": "postgres"
+      "POSTGRES_PASSWORD": "postgres"
+      "POSTGRES_DB": "survey_system"
+      "PGDATA": "/var/lib/postgresql/data"
+    ports:
+      - 5433:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    logging:
+      driver: none
+    networks:
+      - survey
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: survey-system-backend
+    container_name: survey-system-backend
+    environment:
+      - RAILS_ENV=development
+      - RACK_ENV=development
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_HOST=survey
+    volumes:
+      - ./survey-system:/survey
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - survey
+    tty: true
+    networks:
+      - survey
+
+networks:
+  survey:
+    driver: "bridge"
+volumes:
+  pg_data:
+    name: survey_service_pg

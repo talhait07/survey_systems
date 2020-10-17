@@ -1,0 +1,25 @@
+# default database settings
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: 5
+  port: 5432
+  host: <%= ENV['DATABASE_HOST'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+
+development:
+  <<: *default
+  database: survey_system
+
+# test database
+test:
+  <<: *default
+  database: survey_system_test
+
+# production database
+production:
+  <<: *default
+  url: <%= ENV['PRODUCTION_DATABASE_URL'] %>
